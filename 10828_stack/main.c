@@ -1,86 +1,117 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-int input_total_cmd(void)
+int g_stack[10000] = {0,};
+int g_index = -1;
+
+void clear (void)
 {
-    int total_cmd;
-    int input_number;
-    total_cmd = 0;
-    
-    scanf("%d",&input_number);
-
-    if(1 <= input_number && input_number <= 10000)
-    {
-        total_cmd = input_number;
-    }
-
-    return (total_cmd);
+    while(getchar() != '\n'); // buffer clear
 }
 
-char *Input_Cmd(void)
+void Do_Push(char *cmd, char *arg)
 {
-    char cmd_str[12];
-    char *input;
-    scanf("%s",cmd_str);
-    input = cmd_str;
-    return (input);
+    int push_num = 0;
+
+    push_num = atoi(arg);
+
+    if (push_num != 0)
+    {
+        g_stack[++g_index] = push_num;
+    }
 }
 
-void Analysis_Command(char* cmd, char* num)
+void Do_Pop()
 {
-    if(strcmp("push", cmd) == 0)
+    if(g_index >= 0)
     {
-        printf("push");
+        printf("%d\n",g_stack[g_index]);
+        g_stack[g_index--] = 0;
     }
-    else if(strcmp("pop",cmd) == 0)
+    else
     {
-
-        printf("pop");
+        printf("-1\n");
     }
-    else if(strcmp("size",cmd) == 0)
-    {
-
-        printf("size");
-    }
-    else if(strcmp("empty",cmd) == 0)
-    {
-
-        printf("empty");
-    }
-    else if(strcmp("top",cmd) == 0)
-    {
-        printf("top");
-    }
-    printf("\n");
-
 }
 
-void Do_Command(void)
+void Do_Top()
 {
-    char *split_str[2] = {NULL,};
-    int i = 0;
-    char *input_cmd = Input_Cmd();
-    char *ptr = strtok(input_cmd, " ");
-
-    while(ptr != NULL && i < 2)
+    if (g_index >= 0)
     {
-        split_str[i] = ptr;
-        i++;
+        printf("%d\n",g_stack[g_index]);
     }
-    Analysis_Command(split_str[0], split_str[1]);
+    else
+    {
+        printf("-1\n");
+    }
+}
+
+void Do_Size()
+{
+    printf("%d\n",g_index+1);
+}
+
+void Do_Empty()
+{
+    if(g_index >= 0)
+    {
+        printf("0\n");
+    }
+    else
+    {
+        printf("1\n");
+    }
+}
+
+void Do_Command()
+{
+    char input_cmd[17] = {0,};
+    fgets(input_cmd, 17 ,stdin);
+
+    char *cmd, *arg;
+    char *ptr = strtok(input_cmd, " \n");
+    cmd = ptr;
+
+    if(ptr != NULL)
+    {
+        ptr = strtok(NULL, " ");
+        arg = ptr;
+    }
+
+    if (strcmp(cmd,"push") == 0)
+    {
+        Do_Push(cmd,arg);
+    }
+    else if (strcmp(cmd, "pop") == 0)
+    {
+        Do_Pop();
+    }
+    else if (strcmp(cmd, "size") == 0)
+    {
+        Do_Size();
+    }
+    else if (strcmp(cmd, "empty") == 0)
+    {
+        Do_Empty();
+    }
+    else if (strcmp(cmd, "top") == 0)
+    {
+        Do_Top();
+    }
 }
 
 int main (void)
 {
-    unsigned int cmd_cnt;
-    int input_index;
+    int cmd_line = 0;
+    int i = 0;
 
-    input_index = 0;
-    cmd_cnt = input_total_cmd();
-    while(input_index < cmd_cnt)
+    scanf("%d",&cmd_line);
+    clear();
+    while(i < cmd_line)
     {
         Do_Command();
-        input_index++;
+        i++;
     }
 
     return (0);

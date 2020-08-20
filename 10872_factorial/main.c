@@ -5,9 +5,13 @@ int recursive_factorial(int result, int number)
     if (number - 1 > 0 )
     {
         result = recursive_factorial(result, number - 1);
+        result *= number;
     }
-    result *= number;
-
+    else if ( number == 0 )
+    {
+        result = 1;
+    }
+        
     return result;
 }
 
